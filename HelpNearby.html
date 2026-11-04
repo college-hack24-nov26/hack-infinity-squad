@@ -1,0 +1,894 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HelpNearby</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #eef4ff;
+    color: #222;
+}
+
+header {
+    background: #0755c9;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 32px;
+}
+
+nav {
+    background: #063d91;
+    padding: 12px;
+    text-align: center;
+}
+
+nav button {
+    background: white;
+    color: #0755c9;
+    border: none;
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.container {
+    max-width: 850px;
+    margin: 25px auto;
+    padding: 15px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px #ccd7e8;
+}
+
+h2 {
+    color: #0755c9;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+textarea {
+    min-height: 90px;
+}
+
+.btn {
+    background: #0755c9;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px 0;
+}
+
+.btn:hover {
+    background: #003b91;
+}
+
+.hidden {
+    display: none;
+}
+
+.job-card {
+    background: #f5f8ff;
+    border: 1px solid #d5e1f5;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 8px;
+}
+
+.job-card h3 {
+    color: #0755c9;
+}
+
+.delete-btn {
+    background: #d93025;
+    color: white;
+    border: none;
+    padding: 9px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+a {
+    color: #0755c9;
+    cursor: pointer;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>HelpNearby</h1>
+    <p>Find Jobs Near You</p>
+</header>
+
+<!-- LOGIN AND REGISTER -->
+
+<div class="container" id="authPage">
+
+    <div class="card" id="loginBox">
+        <h2>Login</h2>
+
+        <input id="loginEmail" type="email"
+        placeholder="Enter Email">
+
+        <input id="loginPassword" type="password"
+        placeholder="Enter Password">
+
+        <button class="btn" onclick="login()">Login</button>
+
+        <p>New user?
+        <a onclick="showRegister()">Create Account</a></p>
+    </div>
+
+    <div class="card hidden" id="registerBox">
+        <h2>Create Account</h2>
+
+        <input id="regName" placeholder="Your Name">
+
+        <input id="regEmail" type="email"
+        placeholder="Email Address">
+
+        <input id="regPassword" type="password"
+        placeholder="Create Password">
+
+        <button class="btn" onclick="register()">Register</button>
+
+        <p>Already registered?
+        <a onclick="showLogin()">Login</a></p>
+    </div>
+
+</div>
+
+<!-- MAIN WEBSITE -->
+
+<div id="mainPage" class="hidden">
+
+    <nav>
+        <button onclick="showSection('home')">Home</button>
+        <button onclick="showSection('find')">Find Jobs</button>
+        <button onclick="showSection('post')">Post Job</button>
+        <button onclick="showSection('myjobs')">My Jobs</button>
+        <button onclick="showSection('skills')">💡 New Skills</button>
+        <button onclick="logout()">Logout</button>
+    </nav>
+
+    <div class="container">
+
+        <!-- HOME PAGE -->
+
+        <section id="home" class="card">
+            <h2 id="welcome">Welcome to HelpNearby</h2>
+
+            <p>Find nearby part-time and full-time jobs.</p>
+
+            <p>Connect with people and discover local opportunities.</p>
+
+            <button class="btn"
+            onclick="showSection('find')">Find Jobs</button>
+
+            <button class="btn"
+            onclick="showSection('post')">Post a Job</button>
+        </section>
+
+        <!-- FIND JOBS -->
+
+        <section id="find" class="card hidden">
+            <h2>Find Jobs</h2>
+
+            <input id="searchTitle"
+            placeholder="Search job or category">
+
+            <input id="searchPlace"
+            placeholder="Enter Location">
+
+            <button class="btn" onclick="searchJobs()">Search</button>
+
+            <button class="btn" onclick="displayJobs()">Show All</button>
+
+            <h2>⭐ Recommended Jobs for My Skills</h2>
+            <p>Jobs matching the skills you have added under New Skills.</p>
+            <button class="btn" onclick="displayRecommendedJobs()">Show Recommended Jobs</button>
+            <div id="recommendedJobsList"></div>
+
+            <h2>All Available Jobs</h2>
+            <div id="jobsList"></div>
+        </section>
+
+        <!-- POST JOB -->
+
+        <section id="post" class="card hidden">
+            <h2>Post a Job</h2>
+
+            <input id="jobTitle"
+            placeholder="Job Title">
+
+            <select id="jobCategory">
+                <option value="">Select Category</option>
+                <option>House Work</option>
+                <option>Shop Helper</option>
+                <option>Teaching</option>
+                <option>Typing Work</option>
+                <option>Computer Work</option>
+                <option>Other</option>
+            </select>
+
+            <input id="jobLocation"
+            placeholder="Job Location">
+
+            <input id="jobPayment" type="number"
+            placeholder="Payment in Rupees">
+
+            <select id="jobTime">
+                <option value="">Select Job Type</option>
+                <option>Part Time</option>
+                <option>Full Time</option>
+                <option>Temporary</option>
+            </select>
+
+            <textarea id="jobDescription"
+            placeholder="Job Description"></textarea>
+
+            <button class="btn" onclick="postJob()">Upload Job</button>
+        </section>
+
+        <!-- MY JOBS -->
+
+        <section id="myjobs" class="card hidden">
+            <h2>My Posted Jobs</h2>
+            <div id="myJobsList"></div>
+        </section>
+
+        <!-- NEW SKILLS: SKILL EXCHANGE -->
+        <section id="skills" class="card hidden">
+            <h2>💡 New Skills – Skill Exchange</h2>
+            <p>Share the skills you know and learn new skills from other people.</p>
+
+            <div class="job-card">
+                <h3>➕ Add My Skill (I Can Teach)</h3>
+                <input id="teachSkill" placeholder="Skill you can teach (e.g. HTML, Drawing)">
+                <select id="teachCategory">
+                    <option value="">Select Skill Category</option>
+                    <option>Computer & Technology</option><option>Education</option>
+                    <option>Art & Design</option><option>Language</option>
+                    <option>Cooking</option><option>Other</option>
+                </select>
+                <select id="teachMode" onchange="toggleSkillFee()">
+                    <option value="Free">Free – I will teach for free</option>
+                    <option value="Paid">Paid – I will charge a fee</option>
+                </select>
+                <input id="teachFee" type="number" min="1" placeholder="Fee in Rupees" class="hidden">
+                <input id="teachLocation" placeholder="Your Location">
+                <textarea id="teachDetails" placeholder="Short details about this skill"></textarea>
+                <button class="btn" onclick="addSkill('teach')">Share My Skill</button>
+            </div>
+
+            <div class="job-card">
+                <h3>📚 Skills I Want to Learn</h3>
+                <input id="learnSkill" placeholder="Skill you want to learn (e.g. Python)">
+                <select id="learnCategory">
+                    <option value="">Select Skill Category</option>
+                    <option>Computer & Technology</option><option>Education</option>
+                    <option>Art & Design</option><option>Language</option>
+                    <option>Cooking</option><option>Other</option>
+                </select>
+                <input id="learnLocation" placeholder="Your Location (optional)">
+                <textarea id="learnDetails" placeholder="What exactly do you want to learn?"></textarea>
+                <button class="btn" onclick="addSkill('learn')">Post Learning Request</button>
+            </div>
+
+            <h2>🔎 Explore Skills</h2>
+            <input id="skillSearch" placeholder="Search skills..." oninput="displaySkills()">
+            <select id="skillTypeFilter" onchange="displaySkills()">
+                <option value="all">Show All</option>
+                <option value="teach">People Who Can Teach</option>
+                <option value="learn">People Who Want to Learn</option>
+            </select>
+            <div id="skillsList"></div>
+            <h2>My Skill Posts</h2>
+            <div id="mySkillsList"></div>
+        </section>
+
+    </div>
+</div>
+
+<footer>
+    HelpNearby | Connecting People With Local Jobs
+</footer>
+
+<script>
+
+// GET USERS
+
+function getUsers() {
+    return JSON.parse(localStorage.getItem("users") || "[]");
+}
+
+// GET JOBS
+
+function getJobs() {
+    return JSON.parse(localStorage.getItem("jobs") || "[]");
+}
+
+// REGISTER
+
+function register() {
+
+    let name = document.getElementById("regName").value.trim();
+    let email = document.getElementById("regEmail").value.trim().toLowerCase();
+    let password = document.getElementById("regPassword").value;
+
+    if (!name || !email || !password) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    let users = getUsers();
+
+    if (users.some(user => user.email === email)) {
+        alert("Account already exists");
+        return;
+    }
+
+    users.push({
+        name: name,
+        email: email,
+        password: password
+    });
+
+    localStorage.setItem("users", JSON.stringify(users));
+
+    alert("Registration Successful!");
+
+    showLogin();
+}
+
+// LOGIN
+
+function login() {
+
+    let email = document.getElementById("loginEmail").value.trim().toLowerCase();
+    let password = document.getElementById("loginPassword").value;
+
+    let users = getUsers();
+
+    let user = users.find(u =>
+        u.email === email && u.password === password
+    );
+
+    if (user) {
+
+        localStorage.setItem("currentUser", email);
+
+        openWebsite(user.name);
+
+    } else {
+
+        alert("Invalid Email or Password");
+
+    }
+}
+
+// OPEN WEBSITE
+
+function openWebsite(name) {
+
+    document.getElementById("authPage").classList.add("hidden");
+
+    document.getElementById("mainPage").classList.remove("hidden");
+
+    document.getElementById("welcome").textContent =
+        "Welcome, " + name;
+
+    showSection("home");
+}
+
+// REGISTER PAGE
+
+function showRegister() {
+
+    document.getElementById("loginBox").classList.add("hidden");
+
+    document.getElementById("registerBox").classList.remove("hidden");
+}
+
+// LOGIN PAGE
+
+function showLogin() {
+
+    document.getElementById("registerBox").classList.add("hidden");
+
+    document.getElementById("loginBox").classList.remove("hidden");
+}
+
+// NAVIGATION
+
+function showSection(id) {
+
+    let sections = document.querySelectorAll("#mainPage section");
+
+    sections.forEach(section => {
+        section.classList.add("hidden");
+    });
+
+    document.getElementById(id).classList.remove("hidden");
+
+    if (id === "find") {
+        displayJobs();
+        displayRecommendedJobs();
+    }
+
+    if (id === "myjobs") {
+        displayMyJobs();
+    }
+    if (id === "skills") {
+        displaySkills();
+        displayMySkills();
+    }
+}
+
+// POST JOB
+
+function postJob() {
+
+    let title = document.getElementById("jobTitle").value.trim();
+    let category = document.getElementById("jobCategory").value;
+    let location = document.getElementById("jobLocation").value.trim();
+    let payment = document.getElementById("jobPayment").value;
+    let time = document.getElementById("jobTime").value;
+    let description = document.getElementById("jobDescription").value.trim();
+
+    if (!title || !category || !location || !payment || !time) {
+        alert("Please fill all required fields");
+        return;
+    }
+
+    if (Number(payment) <= 0) {
+        alert("Enter a valid payment");
+        return;
+    }
+
+    let jobs = getJobs();
+
+    jobs.push({
+        id: Date.now(),
+        title: title,
+        category: category,
+        location: location,
+        payment: payment,
+        time: time,
+        description: description,
+        email: localStorage.getItem("currentUser")
+    });
+
+    localStorage.setItem("jobs", JSON.stringify(jobs));
+
+    alert("Job Uploaded Successfully!");
+
+    document.getElementById("jobTitle").value = "";
+    document.getElementById("jobCategory").value = "";
+    document.getElementById("jobLocation").value = "";
+    document.getElementById("jobPayment").value = "";
+    document.getElementById("jobTime").value = "";
+    document.getElementById("jobDescription").value = "";
+
+    showSection("myjobs");
+}
+
+// DISPLAY ALL JOBS
+
+function displayJobs() {
+
+    let jobs = getJobs();
+
+    let list = document.getElementById("jobsList");
+
+    list.innerHTML = "";
+
+    if (jobs.length === 0) {
+        list.textContent = "No jobs available yet.";
+        return;
+    }
+
+    jobs.forEach(job => {
+
+        let card = document.createElement("div");
+        card.className = "job-card";
+
+        let title = document.createElement("h3");
+        title.textContent = job.title;
+
+        let category = document.createElement("p");
+        category.textContent = "Category: " + job.category;
+
+        let location = document.createElement("p");
+        location.textContent = "Location: " + job.location;
+
+        let payment = document.createElement("p");
+        payment.textContent = "Payment: Rs. " + job.payment;
+
+        let time = document.createElement("p");
+        time.textContent = "Type: " + job.time;
+
+        let description = document.createElement("p");
+        description.textContent = job.description;
+
+        card.append(title, category, location, payment, time, description);
+
+        list.appendChild(card);
+    });
+}
+
+// SEARCH JOBS
+
+function searchJobs() {
+
+    let title = document.getElementById("searchTitle").value.toLowerCase().trim();
+
+    let place = document.getElementById("searchPlace").value.toLowerCase().trim();
+
+    let jobs = getJobs();
+
+    let results = jobs.filter(job =>
+
+        (job.title.toLowerCase().includes(title) ||
+        job.category.toLowerCase().includes(title)) &&
+
+        job.location.toLowerCase().includes(place)
+
+    );
+
+    let list = document.getElementById("jobsList");
+
+    list.innerHTML = "";
+
+    if (results.length === 0) {
+        list.textContent = "No matching jobs found.";
+        return;
+    }
+
+    results.forEach(job => {
+
+        let card = document.createElement("div");
+        card.className = "job-card";
+
+        let heading = document.createElement("h3");
+        heading.textContent = job.title;
+
+        let details = document.createElement("p");
+        details.textContent =
+            job.category + " | " + job.location +
+            " | Rs. " + job.payment + " | " + job.time;
+
+        let description = document.createElement("p");
+        description.textContent = job.description;
+
+        card.append(heading, details, description);
+
+        list.appendChild(card);
+    });
+}
+
+// MY JOBS
+
+function displayMyJobs() {
+
+    let jobs = getJobs();
+
+    let email = localStorage.getItem("currentUser");
+
+    let myJobs = jobs.filter(job => job.email === email);
+
+    let list = document.getElementById("myJobsList");
+
+    list.innerHTML = "";
+
+    if (myJobs.length === 0) {
+        list.textContent = "You have not posted any jobs.";
+        return;
+    }
+
+    myJobs.forEach(job => {
+
+        let card = document.createElement("div");
+        card.className = "job-card";
+
+        let heading = document.createElement("h3");
+        heading.textContent = job.title;
+
+        let details = document.createElement("p");
+        details.textContent =
+            job.category + " | " + job.location +
+            " | Rs. " + job.payment;
+
+        let deleteButton = document.createElement("button");
+        deleteButton.className = "delete-btn";
+        deleteButton.textContent = "Delete Job";
+
+        deleteButton.onclick = function() {
+            deleteJob(job.id);
+        };
+
+        card.append(heading, details, deleteButton);
+
+        list.appendChild(card);
+    });
+}
+
+// DELETE JOB
+
+function deleteJob(id) {
+
+    if (!confirm("Are you sure you want to delete this job?")) {
+        return;
+    }
+
+    let jobs = getJobs();
+
+    jobs = jobs.filter(job => job.id !== id);
+
+    localStorage.setItem("jobs", JSON.stringify(jobs));
+
+    displayMyJobs();
+
+    alert("Job Deleted");
+}
+
+
+// SKILL EXCHANGE
+function getSkills() {
+    return JSON.parse(localStorage.getItem("skills") || "[]");
+}
+
+function addSkill(type) {
+    let email = localStorage.getItem("currentUser");
+    let user = getUsers().find(u => u.email === email);
+    if (!user) { alert("Please login again."); return; }
+
+    let prefix = type === "teach" ? "teach" : "learn";
+    let name = document.getElementById(prefix + "Skill").value.trim();
+    let category = document.getElementById(prefix + "Category").value;
+    let location = document.getElementById(prefix + "Location").value.trim();
+    let details = document.getElementById(prefix + "Details").value.trim();
+    let mode = type === "teach" ? document.getElementById("teachMode").value : "Free";
+    let fee = type === "teach" && mode === "Paid"
+        ? document.getElementById("teachFee").value.trim()
+        : "";
+
+    if (!name || !category) {
+        alert("Please enter the skill name and select a category.");
+        return;
+    }
+    if (type === "teach" && mode === "Paid" && (!fee || Number(fee) <= 0)) {
+        alert("Please enter a valid fee for your paid skill.");
+        return;
+    }
+
+    let skills = getSkills();
+    skills.push({
+        id: Date.now(), type, name, category, location, details,
+        mode, fee, email, userName: user.name
+    });
+    localStorage.setItem("skills", JSON.stringify(skills));
+
+    ["Skill", "Category", "Location", "Details"].forEach(field => {
+        document.getElementById(prefix + field).value = "";
+    });
+    if (type === "teach") {
+        document.getElementById("teachMode").value = "Free";
+        document.getElementById("teachFee").value = "";
+        document.getElementById("teachFee").classList.add("hidden");
+    }
+    alert(type === "teach" ? "Your skill has been shared!" : "Your learning request has been posted!");
+    displaySkills();
+    displayMySkills();
+}
+
+function displaySkills() {
+    let list = document.getElementById("skillsList");
+    if (!list) return;
+    list.innerHTML = "";
+
+    let email = localStorage.getItem("currentUser");
+    let query = (document.getElementById("skillSearch").value || "").toLowerCase().trim();
+    let filter = document.getElementById("skillTypeFilter").value;
+    let results = getSkills().filter(s =>
+        s.email !== email &&
+        (filter === "all" || s.type === filter) &&
+        (s.name.toLowerCase().includes(query) ||
+         s.category.toLowerCase().includes(query) ||
+         (s.details || "").toLowerCase().includes(query) ||
+         (s.location || "").toLowerCase().includes(query))
+    );
+
+    if (!results.length) {
+        list.textContent = "No matching skill posts from other users yet.";
+        return;
+    }
+
+    results.forEach(skill => {
+        let card = document.createElement("div");
+        card.className = "skill-card";
+        let heading = document.createElement("h3");
+        heading.textContent = (skill.type === "teach" ? "🎓 Can Teach: " : "📖 Wants to Learn: ") + skill.name;
+        let tag = document.createElement("span");
+        tag.className = "skill-tag";
+        tag.textContent = skill.category;
+        let info = document.createElement("p");
+        info.textContent = "Posted by: " + skill.userName + " | Location: " + (skill.location || "Not specified");
+        let details = document.createElement("p");
+        details.textContent = skill.details || "No extra details provided.";
+        let price = document.createElement("p");
+        if (skill.type === "teach") {
+            price.textContent = skill.mode === "Paid"
+                ? "Type: Paid | Fee: Rs. " + skill.fee
+                : "Type: Free";
+        } else {
+            price.textContent = "Learning request";
+        }
+        let btn = document.createElement("button");
+        btn.className = "btn";
+        btn.textContent = "I'm Interested";
+        btn.onclick = () => alert("This demo shows interest only. Contact details should be shared privately and safely.");
+        card.append(heading, tag, info, price, details, btn);
+        list.appendChild(card);
+    });
+}
+
+function displayMySkills() {
+    let list = document.getElementById("mySkillsList");
+    if (!list) return;
+    list.innerHTML = "";
+    let email = localStorage.getItem("currentUser");
+    let mine = getSkills().filter(s => s.email === email);
+
+    if (!mine.length) {
+        list.textContent = "You have not added any skills or learning requests yet.";
+        return;
+    }
+
+    mine.forEach(skill => {
+        let card = document.createElement("div");
+        card.className = "skill-card";
+        let heading = document.createElement("h3");
+        heading.textContent = (skill.type === "teach" ? "I Can Teach: " : "I Want to Learn: ") + skill.name;
+        let info = document.createElement("p");
+        info.textContent = skill.category + " | " + (skill.location || "Location not specified");
+        let price = document.createElement("p");
+        price.textContent = skill.type === "teach"
+            ? (skill.mode === "Paid" ? "Paid | Fee: Rs. " + skill.fee : "Free")
+            : "Learning request";
+        let btn = document.createElement("button");
+        btn.className = "delete-btn";
+        btn.textContent = "Delete";
+        btn.onclick = () => deleteSkill(skill.id);
+        card.append(heading, info, price, btn);
+        list.appendChild(card);
+    });
+}
+
+function deleteSkill(id) {
+    if (!confirm("Delete this skill post?")) return;
+    localStorage.setItem("skills", JSON.stringify(getSkills().filter(s => s.id !== id)));
+    displaySkills();
+    displayMySkills();
+}
+
+
+function toggleSkillFee() {
+    let mode = document.getElementById("teachMode").value;
+    let feeInput = document.getElementById("teachFee");
+    feeInput.classList.toggle("hidden", mode !== "Paid");
+    feeInput.required = mode === "Paid";
+}
+
+function displayRecommendedJobs() {
+    let list = document.getElementById("recommendedJobsList");
+    if (!list) return;
+    list.innerHTML = "";
+
+    let email = localStorage.getItem("currentUser");
+    let mySkills = getSkills()
+        .filter(skill => skill.email === email && skill.type === "teach")
+        .map(skill => skill.name.toLowerCase());
+
+    if (mySkills.length === 0) {
+        list.textContent = "First add your skills in New Skills → Add My Skill. We will use them to find matching jobs.";
+        return;
+    }
+
+    let jobs = getJobs();
+    let matches = jobs.filter(job => {
+        let jobText = (job.title + " " + job.category + " " + (job.description || "")).toLowerCase();
+        return mySkills.some(skill => {
+            let words = skill.split(/\s+/).filter(word => word.length > 2);
+            return jobText.includes(skill) || words.some(word => jobText.includes(word));
+        });
+    });
+
+    if (matches.length === 0) {
+        list.textContent = "No matching jobs found yet. Add more skills or check again when new jobs are posted.";
+        return;
+    }
+
+    matches.forEach(job => {
+        let card = document.createElement("div");
+        card.className = "job-card";
+        let title = document.createElement("h3");
+        title.textContent = job.title;
+        let details = document.createElement("p");
+        details.textContent = job.category + " | " + job.location + " | Rs. " + job.payment + " | " + job.time;
+        let description = document.createElement("p");
+        description.textContent = job.description || "No extra details provided.";
+        card.append(title, details, description);
+        list.appendChild(card);
+    });
+}
+
+// LOGOUT
+
+function logout() {
+
+    localStorage.removeItem("currentUser");
+
+    document.getElementById("mainPage").classList.add("hidden");
+
+    document.getElementById("authPage").classList.remove("hidden");
+
+    showLogin();
+}
+
+// CHECK LOGIN WHEN PAGE OPENS
+
+let savedEmail = localStorage.getItem("currentUser");
+
+if (savedEmail) {
+
+    let user = getUsers().find(u => u.email === savedEmail);
+
+    if (user) {
+        openWebsite(user.name);
+    } else {
+        localStorage.removeItem("currentUser");
+    }
+}
+
+</script>
+
+</body>
+</html>
